@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Attention</title>
+  <meta name="description" content="Estimated value generated from your attention.">
+  <meta property="og:title" content="Your Attention">
+  <meta property="og:description" content="Estimated value generated from your attention.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://your-attention.vercel.app/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://your-attention.vercel.app/og.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;1,300&family=Inter:wght@300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- About -->
+  <button id="about-btn">What is this?</button>
+
+  <div id="about-overlay">
+    <div id="about-content">
+      <!-- Platform about (default) -->
+      <div id="about-platform">
+        <p>This site estimates the monetary value generated from your attention in real time.</p>
+        <p>
+          Platforms report their annual revenue and user counts publicly.
+          Divide revenue by users, divide by minutes per day, and you get a rate:
+          <strong>what one person's attention is worth, per second.</strong>
+          The second number multiplies that rate across the full platform.
+        </p>
+        <p>
+          The individual amount is small. The scale is not.
+          Switch the platform below to see how the economics differ.
+        </p>
+        <p>
+          Broadcast TV at its peak ran a similar rate per second.
+          The arithmetic of attention isn't new — the scale is, and so is what gets collected alongside it.
+          <strong>Streaming inverts the model: you pay for the right to give them your time.</strong>
+        </p>
+        <p class="source-note">
+          Based on FY2025 results (Meta) and FY2024 results (YouTube, Google Search) from published annual reports.
+          TikTok figures from analyst estimates (2024 ad revenue ~$18B). All numbers are global averages.
+        </p>
+      </div>
+      <!-- Moments about -->
+      <div id="about-moments" style="display:none;">
+        <p>Some moments pull everyone's attention to the same place at the same time.</p>
+        <p>
+          The counter shows what that collective attention is worth — not to you, but to the systems capturing it.
+          <strong>Ad revenue, broadcast rights, sponsorships, platform surges — all flowing through a single event.</strong>
+        </p>
+        <p>
+          The Super Bowl. Election Night. A Twitch streamer's subathon.
+          Different shapes of attention. Different economies. Same arithmetic.
+        </p>
+        <p class="source-note">
+          Figures from Nielsen, published earnings reports, and analyst estimates.
+          Per-second values calculated from total event revenue divided by broadcast duration.
+        </p>
+      </div>
+      <button id="about-close">Close</button>
+    </div>
+  </div>
+
+  <!-- Lifetime (return visits only) -->
+  <div id="lifetime-entry">
+    <div class="label">This browser, total</div>
+    <div class="value" id="lifetime-display">$0.0000</div>
+  </div>
+
+  <!-- ═══ PLATFORM MODE ═══ -->
+  <div id="platform-mode">
+    <div id="main">
+      <div id="eyebrow">Estimated value generated from your attention</div>
+      <div id="ledger-value">$0.0000</div>
+      <div id="ledger-scale">
+        <div id="scale-amount">$0.00</div>
+        <div id="scale-label"></div>
+      </div>
+      <div id="margin-notes">
+        <div class="margin-note" id="note-time"></div>
+        <div class="margin-note" id="note-15">It adds up.</div>
+        <div class="margin-note" id="note-60">Across billions, this becomes a business.</div>
+        <div class="margin-note" id="note-180">You've been here a while.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MOMENTS MODE ═══ -->
+  <div id="moments-mode" style="display:none;">
+    <div id="moments-main">
+      <div id="moments-eyebrow">Collective attention, right now</div>
+      <div id="moments-value">$0</div>
+      <div id="moments-context"></div>
+      <div id="moments-notes">
+        <div class="margin-note" id="moments-note-flavor"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Platform label / mode hint -->
+  <div id="platform-label">platform</div>
+
+  <!-- ═══ BOTTOM SELECTORS ═══ -->
+
+  <!-- Mode toggle -->
+  <div id="mode-toggle">
+    <button class="mode-btn active" data-mode="platform">Platform</button>
+    <span class="mode-sep">·</span>
+    <button class="mode-btn" data-mode="moments">Moments</button>
+  </div>
+
+  <!-- Platform lens selector (shown in platform mode) -->
+  <div id="book-selector">
+    <button class="active" data-lens="meta">
+      Meta
+      <span class="lens-desc">social feed</span>
+    </button>
+    <span class="sep">·</span>
+    <button data-lens="tiktok">
+      TikTok
+      <span class="lens-desc">short video</span>
+    </button>
+    <span class="sep">·</span>
+    <button data-lens="youtube">
+      YouTube
+      <span class="lens-desc">long video</span>
+    </button>
+    <span class="sep">·</span>
+    <button data-lens="google">
+      Google
+      <span class="lens-desc">search</span>
+    </button>
+  </div>
+
+  <!-- Moments event selector (shown in moments mode) -->
+  <div id="moments-selector" style="display:none;">
+    <div id="moments-categories">
+      <button class="cat-btn active" data-cat="sports">Spectacles</button>
+      <span class="cat-sep">·</span>
+      <button class="cat-btn" data-cat="culture">Ceremonies</button>
+      <span class="cat-sep">·</span>
+      <button class="cat-btn" data-cat="political">Inflections</button>
+      <span class="cat-sep">·</span>
+      <button class="cat-btn" data-cat="digital">Digital-native</button>
+    </div>
+    <div id="moments-events"></div>
+  </div>
+
+  <!-- Leave -->
+  <div id="close-entry">
+    <div id="leave-hover-text">It will keep going if you don't.</div>
+    <a href="about:blank" id="leave-link">Leave</a>
+  </div>
+
+  <!-- Favicon eye SVG — hidden via CSS, serialized to favicon each frame -->
+  <!-- iris + pupil use ellipse so ry can be animated for blink -->
+  <svg id="eye-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+    <circle cx="32" cy="32" r="30" fill="#f0ede8"/>
+    <ellipse id="eye-iris"  cx="32" cy="32" rx="13" ry="13" fill="#4a4a46"/>
+    <ellipse id="eye-pupil" cx="32" cy="32" rx="6"  ry="6"  fill="#0a0a0a"/>
+  </svg>
+
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script src="main.js"></script>
+
+</body>
+</html>
