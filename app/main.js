@@ -312,7 +312,7 @@ const MOMENTS = {
     name: 'The Super Bowl',
     cat: 'sports',
     desc: 'broadcast + social + betting',
-    audience: '125M US',
+    audience: '125 million viewers',
     rate: 267000,   // ~$8M/30sec ad spots, ~50min of ads over ~4hrs
     flavor: 'The only event where people watch the ads on purpose.',
     context: '125 million Americans. $8M per 30-second spot. The attention is voluntary.',
@@ -322,7 +322,7 @@ const MOMENTS = {
     name: 'World Cup Final',
     cat: 'sports',
     desc: 'the whole planet',
-    audience: '1.5B global',
+    audience: '1.5 billion viewers',
     rate: 1500000,  // Estimated from ~$11B tournament rev, final captures disproportionate share
     flavor: 'The single largest simultaneous audience on Earth.',
     context: '1.5 billion viewers. Every broadcast surface on the planet. Nothing else comes close.',
@@ -332,7 +332,7 @@ const MOMENTS = {
     name: 'NBA Finals',
     cat: 'sports',
     desc: 'game 7',
-    audience: '19.6M US',
+    audience: '19.6 million viewers',
     rate: 18000,    // $288M series / ~7 games / ~2.5hrs
     flavor: 'The per-second value of Game 7 dwarfs Game 1.',
     context: '19.6 million viewers at peak. $288M in ad revenue across the series.',
@@ -342,7 +342,7 @@ const MOMENTS = {
     name: 'Stanley Cup',
     cat: 'sports',
     desc: 'smaller crowd, higher CPM',
-    audience: '4.8M US+CA',
+    audience: '4.8 million viewers',
     rate: 8000,     // ~$250M series / ~6 games / ~2.5hrs
     flavor: 'The audience is smaller. The audience is wealthier. The math still works.',
     context: '4.8 million viewers. The hockey audience skews wealthy — the CPM reflects it.',
@@ -354,7 +354,7 @@ const MOMENTS = {
     name: 'The Oscars',
     cat: 'culture',
     desc: 'fashion + discourse + catalog bumps',
-    audience: '17.9M US',
+    audience: '17.9 million viewers',
     rate: 66667,    // $2M/30sec
     flavor: 'The ceremony is the seed. The real attention harvest comes after.',
     context: '17.9 million viewers. $2M per 30-second spot. Nominees see streaming spikes for weeks.',
@@ -364,7 +364,7 @@ const MOMENTS = {
     name: 'The Grammys',
     cat: 'culture',
     desc: 'performances + streaming spikes',
-    audience: '14.4M US',
+    audience: '14.4 million viewers',
     rate: 30000,    // ~$900K-1M/30sec estimated
     flavor: 'A single performance can generate millions of streams overnight.',
     context: '14.4 million viewers. 74.8 million social interactions. 302.5 million video views.',
@@ -376,7 +376,7 @@ const MOMENTS = {
     name: 'Election Night',
     cat: 'political',
     desc: 'compulsive attention',
-    audience: '42.3M US',
+    audience: '42.3 million viewers',
     rate: 50000,    // Estimated across 18 networks, 4-8hrs sustained
     flavor: 'Nobody is being entertained. They\'re watching because they have to know.',
     context: '42.3 million viewers across 18 networks. Hours of near-zero channel switching.',
@@ -386,7 +386,7 @@ const MOMENTS = {
     name: 'State of the Union',
     cat: 'political',
     desc: 'appointment TV, cross-demographic',
-    audience: '36.6M US',
+    audience: '36.6 million viewers',
     rate: 30000,    // Estimated from network ad rates across ~1.5hrs
     flavor: 'One of the only remaining appointment-TV political events.',
     context: '36.6 million viewers. Peak of 37.9M at 9:45 PM. Every major network, simultaneously.',
@@ -398,7 +398,7 @@ const MOMENTS = {
     name: 'Kai Cenat Subathon',
     cat: 'digital',
     desc: 'one person, one camera',
-    audience: '1M concurrent',
+    audience: '1 million viewers',
     rate: 7.72,     // ~$20M over 30 days = ~$7.72/sec
     flavor: 'One person generating Super Bowl-adjacent revenue from a living room.',
     context: '1,005,331 concurrent viewers. 1,031,736 subscribers. ~$20M in 30 days. No broadcast network.',
@@ -408,7 +408,7 @@ const MOMENTS = {
     name: 'LoL Worlds Final',
     cat: 'digital',
     desc: '50M viewers, mostly invisible',
-    audience: '50M global',
+    audience: '50 million viewers',
     rate: 14000,    // Estimated from esports sponsorship + broadcast deals over ~5hr broadcast
     flavor: 'Most of this audience is invisible to traditional media measurement.',
     context: '50 million peak viewers including China. 6.9M excluding China. Primarily under 30.',
@@ -418,7 +418,7 @@ const MOMENTS = {
     name: 'MrBeast Video Drop',
     cat: 'digital',
     desc: '$3,333 per content-second',
-    audience: '33-52M views/24hrs',
+    audience: '33–52 million viewers',
     rate: 3333,     // ~$3M ad rev over ~15min of content
     flavor: 'Per-second attention value that rivals network television. One creator.',
     context: '33-52M views in the first 24 hours. ~$3M in ad revenue per 15-minute video.',
@@ -428,7 +428,7 @@ const MOMENTS = {
     name: 'Joe Rogan Episode',
     cat: 'digital',
     desc: 'audio-first, 11M listeners',
-    audience: '11M per episode',
+    audience: '11 million listeners',
     rate: 11.57,    // ~$100K per episode / ~2.4hrs avg
     flavor: 'No visual real estate to sell. Monetizes at scale anyway.',
     context: '11 million listeners per episode. #1 on Spotify, Apple, and YouTube. Six years running.',
@@ -438,7 +438,7 @@ const MOMENTS = {
     name: 'Netflix Premiere',
     cat: 'digital',
     desc: 'no ads — attention as retention',
-    audience: '68M views/4 days',
+    audience: '68 million viewers',
     rate: 39,       // 487.6M hours in 4 days, ~$0.10/hr internal value
     flavor: 'The value is invisible. It exists as retention, not revenue.',
     context: '68M views in 4 days. 487.6M hours watched. #1 in 92 countries. Zero ad dollars.',
@@ -448,7 +448,7 @@ const MOMENTS = {
     name: 'Amazon Prime Day',
     cat: 'digital',
     desc: 'attention as transaction',
-    audience: 'hundreds of millions',
+    audience: '200+ million shoppers',
     rate: 69791,    // $24.1B / 4 days / 86400 sec
     flavor: 'No entertainment. No content. Pure commercial attention converted to purchases.',
     context: '$24.1 billion in 4 days. Equivalent to Black Friday + Cyber Monday combined.',
@@ -622,5 +622,6 @@ modeToggleEl.addEventListener('click', (e) => {
   switchMode(btn.dataset.mode);
 });
 
-// Initialize moments events (but don't show yet)
+// Initialize moments events and set first event data
 renderCategoryEvents(selectedCat);
+selectEvent(selectedEventKey);

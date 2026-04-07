@@ -108,7 +108,7 @@ body {
 /* ─── Lifetime (return visits only) ──────────────────────────────────── */
 #lifetime-entry {
   position: fixed;
-  top: 1.75rem;
+  top: 4rem;
   right: 1.75rem;
   text-align: right;
   display: none;
