@@ -85,6 +85,7 @@
   <div id="platform-mode">
     <div id="main">
       <div id="eyebrow">Estimated value generated from your attention</div>
+      <div id="platform-elapsed-timer"></div>
       <div id="ledger-value">$0.0000</div>
       <div id="ledger-scale">
         <div id="scale-amount">$0.00</div>
@@ -103,9 +104,10 @@
   <div id="moments-mode" style="display:none;">
     <div id="moments-main">
       <div id="moments-eyebrow">What collective attention is worth</div>
-      <div id="moments-audience-row">
-        <div id="moments-audience"></div>
-        <div id="moments-timer">0:00</div>
+      <div id="moments-metadata-row">
+        <span id="moments-audience"></span>
+        <span class="metadata-sep">·</span>
+        <span id="moments-timer">0:00</span>
       </div>
       <div id="moments-value">$0</div>
       <div id="moments-context"></div>
@@ -115,17 +117,16 @@
     </div>
   </div>
 
-  <!-- Platform label / mode hint -->
-  <div id="platform-label">platform</div>
-
   <!-- ═══ BOTTOM SELECTORS ═══ -->
 
   <!-- Platform lens selector (shown in platform mode) -->
-  <div id="book-selector">
-    <button class="active" data-lens="meta">Meta</button>
-    <button data-lens="tiktok">TikTok</button>
-    <button data-lens="youtube">YouTube</button>
-    <button data-lens="google">Google</button>
+  <div id="platform-selectors-wrapper">
+    <div id="book-selector">
+      <button class="active" data-lens="meta">Meta</button>
+      <button data-lens="tiktok">TikTok</button>
+      <button data-lens="youtube">YouTube</button>
+      <button data-lens="google">Google</button>
+    </div>
   </div>
 
   <!-- Moments event selector (shown in moments mode) -->

@@ -35,6 +35,12 @@ function fmtScaled(n) {
   return '$' + n.toFixed(2);
 }
 
+function fmtTimer(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+
 // ─── Time of day note ───────────────────────────────────────────────────
 // Late night and late evening only. Silence during regular hours.
 function getTimeOfDayNote() {
@@ -84,6 +90,7 @@ const scaleAmountEl  = document.getElementById('scale-amount');
 const scaleLabelEl   = document.getElementById('scale-label');
 const leaveHoverEl   = document.getElementById('leave-hover-text');
 const leaveLinkEl    = document.getElementById('leave-link');
+const platformElapsedEl = document.getElementById('platform-elapsed-timer');
 
 // ─── Animation loop ─────────────────────────────────────────────────────
 function tick(now) {
@@ -98,6 +105,9 @@ function tick(now) {
 
   // Primary number
   ledgerValueEl.textContent = fmtSession(sessionValue);
+
+  // Elapsed timer (subtle)
+  platformElapsedEl.textContent = fmtTimer(elapsedSeconds);
 
   // Scale: the "oh shit" confrontation — their number vs yours
   const scaled = sessionValue * lens.dau;
@@ -124,33 +134,6 @@ function tick(now) {
 
 requestAnimationFrame(tick);
 
-// ─── Platform label — dynamic suggestion, clickable ────────────────────
-const NEXT_LENS = {
-  meta:    { key: 'google',  label: 'Now try Google.' },
-  google:  { key: 'tiktok',  label: 'Now try TikTok.' },
-  tiktok:  { key: 'meta',    label: 'Now try Meta.'   },
-  youtube: { key: 'google',  label: 'Now try Google.' },
-};
-
-const platformLabelEl = document.getElementById('platform-label');
-
-function updatePlatformLabel(lensKey) {
-  const next = NEXT_LENS[lensKey];
-  if (next) platformLabelEl.textContent = next.label;
-}
-
-updatePlatformLabel(selectedLensKey); // set on load
-
-platformLabelEl.addEventListener('click', () => {
-  const next = NEXT_LENS[selectedLensKey];
-  if (!next) return;
-  selectedLensKey = next.key;
-  document.querySelectorAll('[data-lens]').forEach(b => {
-    b.classList.toggle('active', b.dataset.lens === selectedLensKey);
-  });
-  updatePlatformLabel(selectedLensKey);
-});
-
 // ─── Lens switching (counter does not reset — rate changes forward only) ─
 document.getElementById('book-selector').addEventListener('click', (e) => {
   const btn = e.target.closest('[data-lens]');
@@ -158,7 +141,6 @@ document.getElementById('book-selector').addEventListener('click', (e) => {
   selectedLensKey = btn.dataset.lens;
   document.querySelectorAll('[data-lens]').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  updatePlatformLabel(selectedLensKey);
 });
 
 // ─── About ──────────────────────────────────────────────────────────────
@@ -491,14 +473,9 @@ const momentsEventsEl   = document.getElementById('moments-events');
 const momentsSelectorEl = document.getElementById('moments-selector');
 const bookSelectorEl    = document.getElementById('book-selector');
 const modeToggleEl      = document.getElementById('mode-toggle');
+const platformSelectorsWrapperEl = document.getElementById('platform-selectors-wrapper');
 
 // ─── Moments formatting ─────────────────────────────────────────────────
-function fmtTimer(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return m + ':' + String(s).padStart(2, '0');
-}
-
 function fmtMoments(n) {
   if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
   if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
@@ -506,7 +483,7 @@ function fmtMoments(n) {
   return '$' + n.toFixed(2);
 }
 
-// ─── Render event buttons for a category ────────────────────────────────
+// ─── Render event buttons for a category (NO descriptions) ──────────────
 function renderCategoryEvents(cat) {
   momentsEventsEl.innerHTML = '';
   const events = Object.entries(MOMENTS).filter(([, v]) => v.cat === cat);
@@ -530,11 +507,14 @@ function selectEvent(key) {
 
   const evt = MOMENTS[key];
   momentsAudienceEl.textContent = evt.audience;
+
+  // Context line only, no "What is this?" link here
   if (evt.link) {
-    momentsContextEl.innerHTML = evt.context + ' <a href="' + evt.link + '" target="_blank" rel="noopener" class="learn-more">What is this?</a>';
+    momentsContextEl.innerHTML = evt.context + ' <a href="' + evt.link + '" target="_blank" rel="noopener" class="learn-more"><span class="event-link-icon">↗</span></a>';
   } else {
     momentsContextEl.textContent = evt.context;
   }
+
   momentsFlavorEl.textContent   = evt.flavor;
   momentsValueEl.textContent    = '$0';
   momentsTimerEl.textContent    = '0:00';
@@ -605,9 +585,8 @@ function switchMode(mode) {
   if (mode === 'platform') {
     platformModeEl.style.display = '';
     momentsModeEl.style.display  = 'none';
-    bookSelectorEl.style.display = '';
+    platformSelectorsWrapperEl.style.display = '';
     momentsSelectorEl.style.display = 'none';
-    platformLabelEl.style.display = '';
     lifetimeEntry.style.display = lifetimeValue > 0 ? 'block' : 'none';
 
     // Show platform about, hide moments about
@@ -616,9 +595,8 @@ function switchMode(mode) {
   } else {
     platformModeEl.style.display = 'none';
     momentsModeEl.style.display  = '';
-    bookSelectorEl.style.display = 'none';
+    platformSelectorsWrapperEl.style.display = 'none';
     momentsSelectorEl.style.display = '';
-    platformLabelEl.style.display = 'none';
     lifetimeEntry.style.display = 'none';
 
     // Show moments about, hide platform about
