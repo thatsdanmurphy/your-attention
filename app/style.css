@@ -277,13 +277,26 @@ body {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 #moments-context {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  max-width: 420px;
+  text-align: center;
+}
+.context-subtitle {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 0.8125rem;
+  color: var(--dim);
+  line-height: 1.5;
+}
+.context-detail {
   font-family: 'DM Mono', monospace;
   font-weight: 300;
   font-size: 0.8125rem;
   color: var(--dimmer);
-  text-align: center;
-  margin-top: 0.75rem;
-  max-width: 420px;
   line-height: 1.5;
 }
 .context-link {
@@ -352,11 +365,33 @@ body {
   align-items: center;
   gap: 0.5rem;
 }
+/* Category tabs — text-only, different hierarchy than event chiclets */
 #moments-categories {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+.cat-tab {
+  background: none;
+  border: none;
+  border-bottom: 1.5px solid transparent;
+  color: var(--dimmer);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.2rem 0;
+  transition: color 0.2s, border-color 0.2s;
+  -webkit-font-smoothing: antialiased;
+}
+.cat-tab:hover { color: var(--dim); }
+.cat-tab.active {
+  color: var(--text);
+  border-bottom-color: var(--text);
 }
 #moments-events {
   display: flex;
@@ -415,11 +450,40 @@ body {
 
 /* ─── Mobile ─────────────────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  body { padding: 2rem 1rem 7rem; }
+  body { padding: 2rem 1rem 9rem; }
   #top-nav { top: 1rem; left: 1rem; right: 1rem; }
   #lifetime-entry { top: 3rem; right: 1rem; }
-  .chiclet { padding: 0.35rem 0.75rem; font-size: 0.75rem; }
-  #moments-categories { flex-wrap: wrap; justify-content: center; }
-  #moments-events { flex-wrap: wrap; justify-content: center; overflow: visible; }
+
+  .eyebrow { font-size: 0.75rem; margin-bottom: 1rem; }
   .metadata-row { gap: 0.5rem; font-size: 0.8125rem; }
+  .hero-number { font-size: clamp(2.5rem, 12vw, 4rem); }
+
+  #scale-amount { font-size: clamp(1.25rem, 5vw, 2rem); }
+  #scale-label { font-size: 0.75rem; }
+
+  .context-subtitle { font-size: 0.75rem; }
+  .context-detail { font-size: 0.75rem; }
+
+  #moments-bottom { bottom: 1.75rem; gap: 0.375rem; padding: 0 0.5rem; }
+  #moments-categories { gap: 0.75rem; }
+  .cat-tab { font-size: 0.6875rem; }
+  #moments-events {
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: visible;
+  }
+  .chiclet { padding: 0.3rem 0.65rem; font-size: 0.6875rem; }
+
+  #platform-bottom { bottom: 2.5rem; }
+
+  #close-entry { bottom: 0.5rem; }
+  #leave-link { font-size: 0.6875rem; }
+}
+
+/* Extra small — iPhone SE etc */
+@media (max-width: 375px) {
+  .hero-number { font-size: clamp(2rem, 14vw, 3rem); }
+  #moments-categories { gap: 0.5rem; }
+  .cat-tab { font-size: 0.625rem; letter-spacing: 0.04em; }
+  .chiclet { padding: 0.25rem 0.5rem; font-size: 0.625rem; }
 }

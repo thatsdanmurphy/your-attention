@@ -351,6 +351,7 @@ const MOMENTS = {
     cat: 'digital',
     audience: '1 million concurrent',
     rate: 7.72,
+    subtitle: 'Twitch streamer. Broadcast live for 30 days straight.',
     flavor: 'One person generating Super Bowl-adjacent revenue from a living room.',
     context: '~$20M in 30 days. No broadcast network.',
     source: 'Mafiathon 3 (2025). Streams Charts.',
@@ -361,8 +362,9 @@ const MOMENTS = {
     cat: 'digital',
     audience: '50 million watched',
     rate: 14000,
+    subtitle: 'League of Legends championship. The biggest esports event.',
     flavor: 'Most of this audience is invisible to traditional media.',
-    context: 'Primarily under 30.',
+    context: 'Audience primarily under 30.',
     source: 'Worlds 2024 Final. Esports Charts.',
     link: 'https://en.wikipedia.org/wiki/League_of_Legends_World_Championship',
   },
@@ -371,6 +373,7 @@ const MOMENTS = {
     cat: 'digital',
     audience: '33–52 million views',
     rate: 3333,
+    subtitle: 'YouTube creator. Most-subscribed individual on Earth.',
     flavor: 'Per-second attention value that rivals network television. One creator.',
     context: '~$3M per 15-minute video.',
     source: 'MrBeast (2025). Social Blade.',
@@ -381,6 +384,7 @@ const MOMENTS = {
     cat: 'digital',
     audience: '11 million per episode',
     rate: 11.57,
+    subtitle: 'Podcast. #1 on Spotify for six years running.',
     flavor: 'No visual real estate to sell. Monetizes at scale anyway.',
     context: '#1 on Spotify, Apple, and YouTube.',
     source: 'JRE (2025). Hollywood Reporter.',
@@ -391,6 +395,7 @@ const MOMENTS = {
     cat: 'digital',
     audience: '68 million households',
     rate: 39,
+    subtitle: 'Squid Game S2. Streaming has no ads — attention is retention.',
     flavor: 'The value is invisible. It exists as retention, not revenue.',
     context: '487.6M hours. #1 in 92 countries. Zero ad dollars.',
     source: 'Squid Game S2 (2024). Variety.',
@@ -401,6 +406,7 @@ const MOMENTS = {
     cat: 'digital',
     audience: '200+ million shopped',
     rate: 69791,
+    subtitle: 'Amazon\'s manufactured shopping event. Attention as transaction.',
     flavor: 'No entertainment. No content. Pure commercial attention.',
     context: '$24.1 billion in 4 days.',
     source: 'Prime Day 2025. CNBC.',
@@ -457,14 +463,17 @@ function selectEvent(key) {
   momentsValueEl.textContent    = '$0';
   momentsTimerEl.textContent    = '0:00';
 
-  // Context: short line + optional link arrow
-  if (evt.link) {
-    momentsContextEl.innerHTML =
-      evt.context +
-      ' <a href="' + evt.link + '" target="_blank" rel="noopener" class="context-link" title="Learn more">↗</a>';
-  } else {
-    momentsContextEl.textContent = evt.context;
+  // Build context: subtitle (if present) + context line + link
+  let html = '';
+  if (evt.subtitle) {
+    html += '<span class="context-subtitle">' + evt.subtitle + '</span>';
   }
+  html += '<span class="context-detail">' + evt.context;
+  if (evt.link) {
+    html += ' <a href="' + evt.link + '" target="_blank" rel="noopener" class="context-link" title="Learn more">↗</a>';
+  }
+  html += '</span>';
+  momentsContextEl.innerHTML = html;
 
   // Update active chiclet
   momentsEventsEl.querySelectorAll('.chiclet').forEach(b => {
@@ -500,10 +509,10 @@ requestAnimationFrame(momentsTick);
 
 // ─── Category switching ─────────────────────────────────────────────────
 document.getElementById('moments-categories').addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-cat]');
+  const btn = e.target.closest('.cat-tab');
   if (!btn) return;
   selectedCat = btn.dataset.cat;
-  document.querySelectorAll('#moments-categories .chiclet').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
   const firstKey = Object.keys(MOMENTS).find(k => MOMENTS[k].cat === selectedCat);
