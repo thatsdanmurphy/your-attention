@@ -510,17 +510,11 @@ function fmtMoments(n) {
 function renderCategoryEvents(cat) {
   momentsEventsEl.innerHTML = '';
   const events = Object.entries(MOMENTS).filter(([, v]) => v.cat === cat);
-  events.forEach(([key, evt], i) => {
-    if (i > 0) {
-      const sep = document.createElement('span');
-      sep.className = 'event-sep';
-      sep.textContent = '·';
-      momentsEventsEl.appendChild(sep);
-    }
+  events.forEach(([key, evt]) => {
     const btn = document.createElement('button');
     btn.className = 'event-btn' + (key === selectedEventKey ? ' active' : '');
     btn.dataset.event = key;
-    btn.innerHTML = `${evt.name}<span class="event-desc">${evt.desc}</span>`;
+    btn.textContent = evt.name;
     momentsEventsEl.appendChild(btn);
   });
 }

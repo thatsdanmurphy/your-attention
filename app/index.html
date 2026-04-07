@@ -103,11 +103,11 @@
   <div id="moments-mode" style="display:none;">
     <div id="moments-main">
       <div id="moments-eyebrow">What collective attention is worth</div>
-      <div id="moments-audience"></div>
-      <div id="moments-counter-row">
-        <div id="moments-value">$0</div>
+      <div id="moments-audience-row">
+        <div id="moments-audience"></div>
         <div id="moments-timer">0:00</div>
       </div>
+      <div id="moments-value">$0</div>
       <div id="moments-context"></div>
       <div id="moments-notes">
         <div class="margin-note" id="moments-note-flavor"></div>
@@ -122,36 +122,18 @@
 
   <!-- Platform lens selector (shown in platform mode) -->
   <div id="book-selector">
-    <button class="active" data-lens="meta">
-      Meta
-      <span class="lens-desc">social feed</span>
-    </button>
-    <span class="sep">·</span>
-    <button data-lens="tiktok">
-      TikTok
-      <span class="lens-desc">short video</span>
-    </button>
-    <span class="sep">·</span>
-    <button data-lens="youtube">
-      YouTube
-      <span class="lens-desc">long video</span>
-    </button>
-    <span class="sep">·</span>
-    <button data-lens="google">
-      Google
-      <span class="lens-desc">search</span>
-    </button>
+    <button class="active" data-lens="meta">Meta</button>
+    <button data-lens="tiktok">TikTok</button>
+    <button data-lens="youtube">YouTube</button>
+    <button data-lens="google">Google</button>
   </div>
 
   <!-- Moments event selector (shown in moments mode) -->
   <div id="moments-selector" style="display:none;">
     <div id="moments-categories">
       <button class="cat-btn active" data-cat="sports">Spectacles</button>
-      <span class="cat-sep">·</span>
       <button class="cat-btn" data-cat="culture">Ceremonies</button>
-      <span class="cat-sep">·</span>
       <button class="cat-btn" data-cat="political">Inflections</button>
-      <span class="cat-sep">·</span>
       <button class="cat-btn" data-cat="digital">Digital-native</button>
     </div>
     <div id="moments-events"></div>

@@ -44,6 +44,36 @@ Every non-obvious choice lives here with its reasoning. The diff shows what chan
 
 ---
 
+## 2026-03-27 — Lens set: four named platforms, no Low/High estimates
+
+**What:** Lenses are Meta, TikTok, YouTube, Google. "Low estimate" and "High estimate" removed.
+
+**Why:** "Low" and "High" created confusion without context — users couldn't locate the named platforms within that range, so the estimates felt arbitrary. Four named platforms already span a ~75× rate range (TikTok at ~$0.000006/sec vs Google at ~$0.000457/sec), which is more illustrative than abstract bookends. TikTok was added because it's culturally central to the attention economy conversation, has notably different economics (high time-on-platform, low ARPU), and its presence sharpens the comparison. The range is now legible without explanation.
+
+**Revisit if:** A "low/high" framing is needed to show the statistical spread of the estimate itself, rather than platform comparison. Could be reintroduced as a footnote or tooltip rather than a top-level lens.
+
+---
+
+## 2026-03-27 — Time-of-day aware microcopy
+
+**What:** A contextual note appears at 8 seconds if the user is viewing during late night (12–5am) or prime time (6–9pm). Regular hours get no time note — the silence is intentional.
+
+**Why:** Late-night usage and prime-time usage are the most loaded moments in the attention economy — they mean different things to platforms and to users. Calling out the actual time ("3:12am. The platform doesn't notice.") makes the experience feel alive and personal without adding permanent UI. During regular hours, the numbers alone are sufficient. The conditional note respects the piece's restraint: only fire it when it adds something the numbers can't say alone.
+
+**Revisit if:** The time note conflicts tonally with the other microcopy in testing, or if users read it as surveillance rather than observation.
+
+---
+
+## 2026-03-27 — About overlay ("What is this?")
+
+**What:** A small "What is this?" link fixed top-left opens a full-screen overlay with a plain-language explanation of the math, the scale display, and the disclaimer.
+
+**Why:** First-time visitors arrive without context and the piece creates legitimate questions. The original brief intended the experience to be self-evident, but testing feedback confirmed that "it creates a lot of questions." An about overlay resolves this without compromising the primary experience — the overlay is opt-in, the main screen remains uncluttered. The tone of the about copy matches the piece: plainspoken, no moralizing, lets the math speak.
+
+**Revisit if:** The "What is this?" link itself undermines the piece's confidence — i.e., if it signals that the experience needs explaining rather than feeling. An alternative would be adding a single-sentence explainer permanently below the eyebrow label.
+
+---
+
 ## 2026-03-27 — No social sharing mechanics
 
 **What:** The site has no share buttons, no OG-card-optimized copy, no "tweet this" prompt.
