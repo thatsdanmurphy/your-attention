@@ -468,6 +468,7 @@ let momentsFlavorShown = false;
 const momentsModeEl     = document.getElementById('moments-mode');
 const platformModeEl    = document.getElementById('platform-mode');
 const momentsValueEl    = document.getElementById('moments-value');
+const momentsAudienceEl = document.getElementById('moments-audience');
 const momentsContextEl  = document.getElementById('moments-context');
 const momentsEyebrowEl  = document.getElementById('moments-eyebrow');
 const momentsFlavorEl   = document.getElementById('moments-note-flavor');
@@ -513,9 +514,10 @@ function selectEvent(key) {
   momentsFlavorEl.classList.remove('visible');
 
   const evt = MOMENTS[key];
-  momentsContextEl.textContent = evt.context;
-  momentsFlavorEl.textContent  = evt.flavor;
-  momentsValueEl.textContent   = '$0';
+  momentsAudienceEl.textContent = evt.audience + ' watching';
+  momentsContextEl.textContent  = evt.context;
+  momentsFlavorEl.textContent   = evt.flavor;
+  momentsValueEl.textContent    = '$0';
 
   // Update active states
   document.querySelectorAll('.event-btn').forEach(b => {
