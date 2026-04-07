@@ -20,7 +20,7 @@
 </head>
 <body>
 
-  <!-- Top nav: mode toggle + about -->
+  <!-- Top nav -->
   <div id="top-nav">
     <button id="about-btn">What is this?</button>
     <div id="mode-toggle">
@@ -30,9 +30,9 @@
     </div>
   </div>
 
+  <!-- About overlay -->
   <div id="about-overlay">
     <div id="about-content">
-      <!-- Platform about (default) -->
       <div id="about-platform">
         <p>This site estimates the monetary value generated from your attention in real time.</p>
         <p>
@@ -55,7 +55,6 @@
           TikTok figures from analyst estimates (2024 ad revenue ~$18B). All numbers are global averages.
         </p>
       </div>
-      <!-- Moments about -->
       <div id="about-moments" style="display:none;">
         <p>Some moments pull everyone's attention to the same place at the same time.</p>
         <p>
@@ -83,10 +82,14 @@
 
   <!-- ═══ PLATFORM MODE ═══ -->
   <div id="platform-mode">
-    <div id="main">
-      <div id="eyebrow">Estimated value generated from your attention</div>
-      <div id="platform-elapsed-timer"></div>
-      <div id="ledger-value">$0.0000</div>
+    <div class="content-stack">
+      <div class="eyebrow">Estimated value generated from your attention</div>
+      <div class="metadata-row">
+        <span class="meta-primary" id="platform-lens-name">Meta</span>
+        <span class="meta-sep">·</span>
+        <span class="meta-secondary" id="platform-timer">0:00</span>
+      </div>
+      <div class="hero-number" id="ledger-value">$0.0000</div>
       <div id="ledger-scale">
         <div id="scale-amount">$0.00</div>
         <div id="scale-label"></div>
@@ -102,14 +105,14 @@
 
   <!-- ═══ MOMENTS MODE ═══ -->
   <div id="moments-mode" style="display:none;">
-    <div id="moments-main">
-      <div id="moments-eyebrow">What collective attention is worth</div>
-      <div id="moments-metadata-row">
-        <span id="moments-audience"></span>
-        <span class="metadata-sep">·</span>
-        <span id="moments-timer">0:00</span>
+    <div class="content-stack">
+      <div class="eyebrow">What collective attention is worth</div>
+      <div class="metadata-row">
+        <span class="meta-primary" id="moments-audience"></span>
+        <span class="meta-sep">·</span>
+        <span class="meta-secondary" id="moments-timer">0:00</span>
       </div>
-      <div id="moments-value">$0</div>
+      <div class="hero-number" id="moments-value">$0</div>
       <div id="moments-context"></div>
       <div id="moments-notes">
         <div class="margin-note" id="moments-note-flavor"></div>
@@ -119,23 +122,21 @@
 
   <!-- ═══ BOTTOM SELECTORS ═══ -->
 
-  <!-- Platform lens selector (shown in platform mode) -->
-  <div id="platform-selectors-wrapper">
-    <div id="book-selector">
-      <button class="active" data-lens="meta">Meta</button>
-      <button data-lens="tiktok">TikTok</button>
-      <button data-lens="youtube">YouTube</button>
-      <button data-lens="google">Google</button>
-    </div>
+  <!-- Platform: single chiclet row -->
+  <div id="platform-bottom" class="chiclet-row">
+    <button class="chiclet active" data-lens="meta">Meta</button>
+    <button class="chiclet" data-lens="tiktok">TikTok</button>
+    <button class="chiclet" data-lens="youtube">YouTube</button>
+    <button class="chiclet" data-lens="google">Google</button>
   </div>
 
-  <!-- Moments event selector (shown in moments mode) -->
-  <div id="moments-selector" style="display:none;">
+  <!-- Moments: categories + events -->
+  <div id="moments-bottom" style="display:none;">
     <div id="moments-categories">
-      <button class="cat-btn active" data-cat="sports">Spectacles</button>
-      <button class="cat-btn" data-cat="culture">Ceremonies</button>
-      <button class="cat-btn" data-cat="political">Inflections</button>
-      <button class="cat-btn" data-cat="digital">Digital-native</button>
+      <button class="chiclet active" data-cat="sports">Spectacles</button>
+      <button class="chiclet" data-cat="culture">Ceremonies</button>
+      <button class="chiclet" data-cat="political">Inflections</button>
+      <button class="chiclet" data-cat="digital">Digital-native</button>
     </div>
     <div id="moments-events"></div>
   </div>
@@ -146,8 +147,7 @@
     <a href="about:blank" id="leave-link">Leave</a>
   </div>
 
-  <!-- Favicon eye SVG — hidden via CSS, serialized to favicon each frame -->
-  <!-- iris + pupil use ellipse so ry can be animated for blink -->
+  <!-- Favicon eye SVG -->
   <svg id="eye-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
     <circle cx="32" cy="32" r="30" fill="#f0ede8"/>
     <ellipse id="eye-iris"  cx="32" cy="32" rx="13" ry="13" fill="#4a4a46"/>

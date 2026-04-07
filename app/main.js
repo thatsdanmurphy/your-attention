@@ -4,14 +4,6 @@
 let currentMode = 'platform'; // 'platform' | 'moments'
 
 // ─── Lens definitions ───────────────────────────────────────────────────
-// rate_per_second = arpu_per_day / (minutes_per_day x 60)
-//
-// Meta:    FY2025. Revenue $200.97B, DAP 3.58B. ARPP/day = $0.154.
-// TikTok:  2024 est. ad revenue ~$18.4B (80% of ~$23B total), DAU ~1.5B, 95 min/day.
-//          TikTok does not publish financials; figures from analyst estimates.
-// YouTube: FY2024 ad revenue $36.15B (Alphabet AR), 2.7B MAU, 40 min/day.
-// Google:  FY2024 Search & other $198.1B (Alphabet AR), ~4B daily users, 15 min/day.
-//          Note: reflects all Search-adjacent revenue, not time-on-site alone.
 const LENSES = {
   meta:    { name: 'Meta',    dauStr: '3.58B', dau: 3.58e9, arpu: 0.154, min: 45 },
   tiktok:  { name: 'TikTok', dauStr: '1.5B',  dau: 1.5e9,  arpu: 0.035, min: 95 },
@@ -41,19 +33,24 @@ function fmtTimer(seconds) {
   return m + ':' + String(s).padStart(2, '0');
 }
 
+function fmtMoments(n) {
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return '$' + Math.round(n).toLocaleString();
+  return '$' + n.toFixed(2);
+}
+
 // ─── Time of day note ───────────────────────────────────────────────────
-// Late night and late evening only. Silence during regular hours.
 function getTimeOfDayNote() {
   const now     = new Date();
   const hour    = now.getHours();
   const timeStr = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-
   if (hour >= 0  && hour < 5)  return `${timeStr}. The rate doesn't change.`;
   if (hour >= 21)              return `${timeStr}. Late. The rate doesn't change.`;
   return null;
 }
 
-// ─── State ──────────────────────────────────────────────────────────────
+// ─── Platform state ─────────────────────────────────────────────────────
 let selectedLensKey = 'meta';
 let elapsedSeconds  = 0;
 let sessionValue    = 0;
@@ -66,7 +63,6 @@ let lifetimeValue = parseFloat(localStorage.getItem(STORAGE_KEY) || '0');
 const lifetimeEntry   = document.getElementById('lifetime-entry');
 const lifetimeDisplay = document.getElementById('lifetime-display');
 
-// Show on return visits only (lifetimeValue > 0 means they've been here before)
 if (lifetimeValue > 0) {
   lifetimeEntry.style.display = 'block';
   lifetimeDisplay.textContent = fmtSession(lifetimeValue);
@@ -84,15 +80,16 @@ const NOTES = [
   { id: 'note-180',  threshold: 180 },
 ];
 
-// ─── DOM refs ───────────────────────────────────────────────────────────
-const ledgerValueEl  = document.getElementById('ledger-value');
-const scaleAmountEl  = document.getElementById('scale-amount');
-const scaleLabelEl   = document.getElementById('scale-label');
-const leaveHoverEl   = document.getElementById('leave-hover-text');
-const leaveLinkEl    = document.getElementById('leave-link');
-const platformElapsedEl = document.getElementById('platform-elapsed-timer');
+// ─── Platform DOM refs ──────────────────────────────────────────────────
+const ledgerValueEl    = document.getElementById('ledger-value');
+const scaleAmountEl    = document.getElementById('scale-amount');
+const scaleLabelEl     = document.getElementById('scale-label');
+const platformTimerEl  = document.getElementById('platform-timer');
+const platformLensEl   = document.getElementById('platform-lens-name');
+const leaveHoverEl     = document.getElementById('leave-hover-text');
+const leaveLinkEl      = document.getElementById('leave-link');
 
-// ─── Animation loop ─────────────────────────────────────────────────────
+// ─── Platform animation loop ────────────────────────────────────────────
 function tick(now) {
   const delta = (now - lastTick) / 1000;
   lastTick = now;
@@ -103,13 +100,9 @@ function tick(now) {
   elapsedSeconds += delta;
   sessionValue   += delta * rate;
 
-  // Primary number
-  ledgerValueEl.textContent = fmtSession(sessionValue);
+  ledgerValueEl.textContent  = fmtSession(sessionValue);
+  platformTimerEl.textContent = fmtTimer(elapsedSeconds);
 
-  // Elapsed timer (subtle)
-  platformElapsedEl.textContent = fmtTimer(elapsedSeconds);
-
-  // Scale: the "oh shit" confrontation — their number vs yours
   const scaled = sessionValue * lens.dau;
   scaleAmountEl.textContent = fmtScaled(scaled);
   scaleLabelEl.textContent  = `× ${lens.dauStr} daily ${lens.name} users`;
@@ -124,23 +117,24 @@ function tick(now) {
     }
   });
 
-  // Keep lifetime display current during session (return visits only)
   if (lifetimeValue > 0) {
     lifetimeDisplay.textContent = fmtSession(lifetimeValue + sessionValue);
   }
 
   requestAnimationFrame(tick);
 }
-
 requestAnimationFrame(tick);
 
-// ─── Lens switching (counter does not reset — rate changes forward only) ─
-document.getElementById('book-selector').addEventListener('click', (e) => {
+// ─── Lens switching ─────────────────────────────────────────────────────
+const platformBottomEl = document.getElementById('platform-bottom');
+
+platformBottomEl.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-lens]');
   if (!btn) return;
   selectedLensKey = btn.dataset.lens;
-  document.querySelectorAll('[data-lens]').forEach(b => b.classList.remove('active'));
+  platformBottomEl.querySelectorAll('.chiclet').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  platformLensEl.textContent = LENSES[selectedLensKey].name;
 });
 
 // ─── About ──────────────────────────────────────────────────────────────
@@ -170,7 +164,7 @@ const eyeIris  = document.getElementById('eye-iris');
 const eyePupil = document.getElementById('eye-pupil');
 
 const EYE_CENTER = 32;
-const EYE_RANGE  = 8; // max px the iris can drift from center
+const EYE_RANGE  = 8;
 
 let eyeTargetX  = EYE_CENTER;
 let eyeTargetY  = EYE_CENTER;
@@ -178,7 +172,6 @@ let eyeCurrentX = EYE_CENTER;
 let eyeCurrentY = EYE_CENTER;
 let faviconFrame = 0;
 
-// Cursor tracking — maps viewport position to eye movement range
 document.addEventListener('mousemove', (e) => {
   const dx = (e.clientX / window.innerWidth  - 0.5) * 2;
   const dy = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -186,8 +179,6 @@ document.addEventListener('mousemove', (e) => {
   eyeTargetY = EYE_CENTER + dy * EYE_RANGE;
 });
 
-// Occasional autonomy — eye glances away every 5–10s
-// Breaks the illusion that it's purely reactive
 function scheduleAutonomousGlance() {
   setTimeout(() => {
     const angle = Math.random() * Math.PI * 2;
@@ -211,8 +202,6 @@ function updateFavicon() {
   link.href = url;
 }
 
-// ─── Blink ──────────────────────────────────────────────────────────────
-// Animate iris/pupil ry through a keyframe sequence (~144ms total)
 const BLINK_RY = [13, 9, 4, 1, 1, 4, 9, 13];
 let isBlinking = false;
 
@@ -236,8 +225,6 @@ function scheduleBlink() {
 }
 scheduleBlink();
 
-// ─── Tab-away behavior ───────────────────────────────────────────────────
-// When you return to the tab, the eye was elsewhere while you were gone
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     const angle = Math.random() * Math.PI * 2;
@@ -247,30 +234,22 @@ document.addEventListener('visibilitychange', () => {
 });
 
 function animateEye() {
-  // Lerp toward target — 0.12 gives a slight organic lag
   eyeCurrentX += (eyeTargetX - eyeCurrentX) * 0.12;
   eyeCurrentY += (eyeTargetY - eyeCurrentY) * 0.12;
-
   eyeIris.setAttribute('cx', eyeCurrentX);
   eyeIris.setAttribute('cy', eyeCurrentY);
   eyePupil.setAttribute('cx', eyeCurrentX);
   eyePupil.setAttribute('cy', eyeCurrentY);
-
-  // Throttle favicon DOM writes to every 3 frames (~50ms) for perf
   faviconFrame++;
   if (faviconFrame % 3 === 0) updateFavicon();
-
   requestAnimationFrame(animateEye);
 }
-
 animateEye();
 
 // ─── Persist to localStorage ────────────────────────────────────────────
-// Save on exit (may not fire reliably on mobile)
 window.addEventListener('beforeunload', () => {
   localStorage.setItem(STORAGE_KEY, (lifetimeValue + sessionValue).toString());
 });
-// Backup: save every 30 seconds so a forced close doesn't lose the session
 setInterval(() => {
   localStorage.setItem(STORAGE_KEY, (lifetimeValue + sessionValue).toString());
 }, 30000);
@@ -279,59 +258,46 @@ setInterval(() => {
 // MOMENTS MODE
 // ═══════════════════════════════════════════════════════════════════════════
 
-// ─── Moments data ───────────────────────────────────────────────────────
-// rate = estimated dollars flowing per second during the event
-// audience = estimated simultaneous viewers
-// duration_hrs = approximate broadcast/event duration
-// source = short citation
-//
-// Calculation: total event ad revenue / (duration in seconds)
-// Where exact $/sec isn't calculable, we estimate from ad rates and volume.
-
 const MOMENTS = {
   // ── Sports Spectacles ──
   superbowl: {
-    name: 'The Super Bowl',
+    name: 'Super Bowl',
     cat: 'sports',
-    desc: 'broadcast + social + betting',
     audience: '125 million watched',
-    rate: 267000,   // ~$8M/30sec ad spots, ~50min of ads over ~4hrs
+    rate: 267000,
     flavor: 'The only event where people watch the ads on purpose.',
-    context: '$8M per 30-second spot. The attention is voluntary.',
-    source: 'Super Bowl LX (2026). Nielsen, NBC ad rates.',
+    context: '$8M per 30-second spot.',
+    source: 'Super Bowl LX (2026). Nielsen, NBC.',
     link: 'https://en.wikipedia.org/wiki/Super_Bowl',
   },
   worldcup: {
     name: 'World Cup Final',
     cat: 'sports',
-    desc: 'the whole planet',
     audience: '1.5 billion watched',
-    rate: 1500000,  // Estimated from ~$11B tournament rev, final captures disproportionate share
+    rate: 1500000,
     flavor: 'The single largest simultaneous audience on Earth.',
-    context: 'Every broadcast surface on the planet. Nothing else comes close.',
-    source: 'FIFA 2022 final (1.5B viewers). 2026 projections from FIFA/SI.',
+    context: 'Every broadcast surface on the planet.',
+    source: 'FIFA 2022 final. 2026 projections.',
     link: 'https://en.wikipedia.org/wiki/2022_FIFA_World_Cup_final',
   },
   nbafinals: {
     name: 'NBA Finals',
     cat: 'sports',
-    desc: 'game 7',
     audience: '19.6 million watched',
-    rate: 18000,    // $288M series / ~7 games / ~2.5hrs
+    rate: 18000,
     flavor: 'The per-second value of Game 7 dwarfs Game 1.',
-    context: '$288M in ad revenue across the series. Game 7 dwarfs Game 1.',
-    source: '2025 NBA Finals. NBA.com, Sportico.',
+    context: '$288M in ad revenue across the series.',
+    source: '2025 NBA Finals. Sportico.',
     link: 'https://en.wikipedia.org/wiki/NBA_Finals',
   },
   stanleycup: {
     name: 'Stanley Cup',
     cat: 'sports',
-    desc: 'smaller crowd, higher CPM',
     audience: '4.8 million watched',
-    rate: 8000,     // ~$250M series / ~6 games / ~2.5hrs
-    flavor: 'The audience is smaller. The audience is wealthier. The math still works.',
-    context: 'The hockey audience skews wealthy — the CPM reflects it.',
-    source: '2025 Stanley Cup Finals. Yahoo Sports, Amra & Elma.',
+    rate: 8000,
+    flavor: 'Smaller audience. Wealthier audience. The math still works.',
+    context: 'Hockey audience skews wealthy — the CPM reflects it.',
+    source: '2025 Stanley Cup Finals.',
     link: 'https://en.wikipedia.org/wiki/Stanley_Cup_Finals',
   },
 
@@ -339,23 +305,21 @@ const MOMENTS = {
   oscars: {
     name: 'The Oscars',
     cat: 'culture',
-    desc: 'fashion + discourse + catalog bumps',
     audience: '17.9 million watched',
-    rate: 66667,    // $2M/30sec
-    flavor: 'The ceremony is the seed. The real attention harvest comes after.',
-    context: '$2M per 30-second spot. Nominees see streaming spikes for weeks.',
-    source: '98th Academy Awards (2026). Variety, Deadline.',
+    rate: 66667,
+    flavor: 'The ceremony is the seed. The real harvest comes after.',
+    context: '$2M per 30-second spot.',
+    source: '98th Academy Awards (2026). Variety.',
     link: 'https://en.wikipedia.org/wiki/Academy_Awards',
   },
   grammys: {
     name: 'The Grammys',
     cat: 'culture',
-    desc: 'performances + streaming spikes',
     audience: '14.4 million watched',
-    rate: 30000,    // ~$900K-1M/30sec estimated
+    rate: 30000,
     flavor: 'A single performance can generate millions of streams overnight.',
-    context: '74.8 million social interactions. 302.5 million video views.',
-    source: '68th Grammy Awards (2026). Variety, CBS.',
+    context: '302.5 million video views.',
+    source: '68th Grammy Awards (2026). CBS.',
     link: 'https://en.wikipedia.org/wiki/Grammy_Awards',
   },
 
@@ -363,91 +327,83 @@ const MOMENTS = {
   electionnight: {
     name: 'Election Night',
     cat: 'political',
-    desc: 'compulsive attention',
     audience: '42.3 million tuned in',
-    rate: 50000,    // Estimated across 18 networks, 4-8hrs sustained
+    rate: 50000,
     flavor: 'Nobody is being entertained. They\'re watching because they have to know.',
-    context: '18 networks simultaneously. Hours of near-zero channel switching.',
+    context: '18 networks simultaneously.',
     source: '2024 Presidential Election. Nielsen.',
     link: 'https://en.wikipedia.org/wiki/2024_United_States_presidential_election',
   },
   stateofunion: {
     name: 'State of the Union',
     cat: 'political',
-    desc: 'appointment TV, cross-demographic',
     audience: '36.6 million tuned in',
-    rate: 30000,    // Estimated from network ad rates across ~1.5hrs
+    rate: 30000,
     flavor: 'One of the only remaining appointment-TV political events.',
-    context: 'Peak at 9:45 PM. Every major network, simultaneously.',
+    context: 'Every major network, simultaneously.',
     source: '2025 Joint Address. Nielsen.',
     link: 'https://en.wikipedia.org/wiki/State_of_the_Union',
   },
 
   // ── Digital-Native Moments ──
   kaicenat: {
-    name: 'Kai Cenat Subathon',
+    name: 'Kai Cenat',
     cat: 'digital',
-    desc: 'one person, one camera',
     audience: '1 million concurrent',
-    rate: 7.72,     // ~$20M over 30 days = ~$7.72/sec
+    rate: 7.72,
     flavor: 'One person generating Super Bowl-adjacent revenue from a living room.',
-    context: '1,031,736 subscribers. ~$20M in 30 days. No broadcast network.',
-    source: 'Mafiathon 3 (Sept 2025). Streams Charts, TwitchTracker.',
+    context: '~$20M in 30 days. No broadcast network.',
+    source: 'Mafiathon 3 (2025). Streams Charts.',
     link: 'https://en.wikipedia.org/wiki/Kai_Cenat',
   },
   lolworlds: {
-    name: 'LoL Worlds Final',
+    name: 'LoL Worlds',
     cat: 'digital',
-    desc: '50M viewers, mostly invisible',
     audience: '50 million watched',
-    rate: 14000,    // Estimated from esports sponsorship + broadcast deals over ~5hr broadcast
-    flavor: 'Most of this audience is invisible to traditional media measurement.',
-    context: 'Primarily under 30. Most invisible to traditional media measurement.',
-    source: 'Worlds 2024 Final. Esports Charts, KitGuru.',
+    rate: 14000,
+    flavor: 'Most of this audience is invisible to traditional media.',
+    context: 'Primarily under 30.',
+    source: 'Worlds 2024 Final. Esports Charts.',
     link: 'https://en.wikipedia.org/wiki/League_of_Legends_World_Championship',
   },
   mrbeast: {
-    name: 'MrBeast Video Drop',
+    name: 'MrBeast',
     cat: 'digital',
-    desc: '$3,333 per content-second',
     audience: '33–52 million views',
-    rate: 3333,     // ~$3M ad rev over ~15min of content
+    rate: 3333,
     flavor: 'Per-second attention value that rivals network television. One creator.',
-    context: '~$3M in ad revenue per 15-minute video. One creator.',
-    source: 'MrBeast (2025). Social Blade, creator interviews.',
+    context: '~$3M per 15-minute video.',
+    source: 'MrBeast (2025). Social Blade.',
     link: 'https://en.wikipedia.org/wiki/MrBeast',
   },
   joerogan: {
-    name: 'Joe Rogan Episode',
+    name: 'Joe Rogan',
     cat: 'digital',
-    desc: 'audio-first, 11M listeners',
     audience: '11 million per episode',
-    rate: 11.57,    // ~$100K per episode / ~2.4hrs avg
+    rate: 11.57,
     flavor: 'No visual real estate to sell. Monetizes at scale anyway.',
-    context: '#1 on Spotify, Apple, and YouTube. Six years running.',
-    source: 'JRE (2025). Hollywood Reporter, JRE Library.',
+    context: '#1 on Spotify, Apple, and YouTube.',
+    source: 'JRE (2025). Hollywood Reporter.',
     link: 'https://en.wikipedia.org/wiki/The_Joe_Rogan_Experience',
   },
   squidgame: {
     name: 'Netflix Premiere',
     cat: 'digital',
-    desc: 'no ads — attention as retention',
     audience: '68 million households',
-    rate: 39,       // 487.6M hours in 4 days, ~$0.10/hr internal value
+    rate: 39,
     flavor: 'The value is invisible. It exists as retention, not revenue.',
-    context: '487.6M hours watched. #1 in 92 countries. Zero ad dollars.',
-    source: 'Squid Game S2 (Dec 2024). Variety, Netflix.',
+    context: '487.6M hours. #1 in 92 countries. Zero ad dollars.',
+    source: 'Squid Game S2 (2024). Variety.',
     link: 'https://en.wikipedia.org/wiki/Squid_Game_(TV_series)',
   },
   primeday: {
-    name: 'Amazon Prime Day',
+    name: 'Prime Day',
     cat: 'digital',
-    desc: 'attention as transaction',
     audience: '200+ million shopped',
-    rate: 69791,    // $24.1B / 4 days / 86400 sec
-    flavor: 'No entertainment. No content. Pure commercial attention converted to purchases.',
-    context: '$24.1 billion in 4 days. Equivalent to Black Friday + Cyber Monday combined.',
-    source: 'Prime Day 2025. CNBC, Amazon.',
+    rate: 69791,
+    flavor: 'No entertainment. No content. Pure commercial attention.',
+    context: '$24.1 billion in 4 days.',
+    source: 'Prime Day 2025. CNBC.',
     link: 'https://en.wikipedia.org/wiki/Amazon_Prime_Day',
   },
 };
@@ -461,66 +417,57 @@ let momentsLastTick   = performance.now();
 let momentsFlavorShown = false;
 
 // ─── Moments DOM refs ───────────────────────────────────────────────────
-const momentsModeEl     = document.getElementById('moments-mode');
 const platformModeEl    = document.getElementById('platform-mode');
+const momentsModeEl     = document.getElementById('moments-mode');
 const momentsValueEl    = document.getElementById('moments-value');
 const momentsTimerEl    = document.getElementById('moments-timer');
 const momentsAudienceEl = document.getElementById('moments-audience');
 const momentsContextEl  = document.getElementById('moments-context');
-const momentsEyebrowEl  = document.getElementById('moments-eyebrow');
 const momentsFlavorEl   = document.getElementById('moments-note-flavor');
 const momentsEventsEl   = document.getElementById('moments-events');
-const momentsSelectorEl = document.getElementById('moments-selector');
-const bookSelectorEl    = document.getElementById('book-selector');
+const momentsBottomEl   = document.getElementById('moments-bottom');
 const modeToggleEl      = document.getElementById('mode-toggle');
-const platformSelectorsWrapperEl = document.getElementById('platform-selectors-wrapper');
 
-// ─── Moments formatting ─────────────────────────────────────────────────
-function fmtMoments(n) {
-  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
-  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
-  if (n >= 1e3) return '$' + Math.round(n).toLocaleString();
-  return '$' + n.toFixed(2);
-}
-
-// ─── Render event buttons for a category (NO descriptions) ──────────────
+// ─── Render event chiclets for a category ───────────────────────────────
 function renderCategoryEvents(cat) {
   momentsEventsEl.innerHTML = '';
-  const events = Object.entries(MOMENTS).filter(([, v]) => v.cat === cat);
-  events.forEach(([key, evt]) => {
-    const btn = document.createElement('button');
-    btn.className = 'event-btn' + (key === selectedEventKey ? ' active' : '');
-    btn.dataset.event = key;
-    btn.textContent = evt.name;
-    momentsEventsEl.appendChild(btn);
-  });
+  Object.entries(MOMENTS)
+    .filter(([, v]) => v.cat === cat)
+    .forEach(([key, evt]) => {
+      const btn = document.createElement('button');
+      btn.className = 'chiclet' + (key === selectedEventKey ? ' active' : '');
+      btn.dataset.event = key;
+      btn.textContent = evt.name;
+      momentsEventsEl.appendChild(btn);
+    });
 }
 
 // ─── Select an event ────────────────────────────────────────────────────
 function selectEvent(key) {
-  selectedEventKey = key;
-  momentsElapsed   = 0;
-  momentsValue     = 0;
-  momentsLastTick  = performance.now();
+  selectedEventKey  = key;
+  momentsElapsed    = 0;
+  momentsValue      = 0;
+  momentsLastTick   = performance.now();
   momentsFlavorShown = false;
   momentsFlavorEl.classList.remove('visible');
 
   const evt = MOMENTS[key];
   momentsAudienceEl.textContent = evt.audience;
-
-  // Context line only, no "What is this?" link here
-  if (evt.link) {
-    momentsContextEl.innerHTML = evt.context + ' <a href="' + evt.link + '" target="_blank" rel="noopener" class="learn-more"><span class="event-link-icon">↗</span></a>';
-  } else {
-    momentsContextEl.textContent = evt.context;
-  }
-
   momentsFlavorEl.textContent   = evt.flavor;
   momentsValueEl.textContent    = '$0';
   momentsTimerEl.textContent    = '0:00';
 
-  // Update active states
-  document.querySelectorAll('.event-btn').forEach(b => {
+  // Context: short line + optional link arrow
+  if (evt.link) {
+    momentsContextEl.innerHTML =
+      evt.context +
+      ' <a href="' + evt.link + '" target="_blank" rel="noopener" class="context-link" title="Learn more">↗</a>';
+  } else {
+    momentsContextEl.textContent = evt.context;
+  }
+
+  // Update active chiclet
+  momentsEventsEl.querySelectorAll('.chiclet').forEach(b => {
     b.classList.toggle('active', b.dataset.event === key);
   });
 }
@@ -542,7 +489,6 @@ function momentsTick(now) {
   momentsValueEl.textContent = fmtMoments(momentsValue);
   momentsTimerEl.textContent = fmtTimer(momentsElapsed);
 
-  // Show flavor note after 5 seconds
   if (momentsElapsed >= 5 && !momentsFlavorShown) {
     momentsFlavorEl.classList.add('visible');
     momentsFlavorShown = true;
@@ -554,13 +500,12 @@ requestAnimationFrame(momentsTick);
 
 // ─── Category switching ─────────────────────────────────────────────────
 document.getElementById('moments-categories').addEventListener('click', (e) => {
-  const btn = e.target.closest('.cat-btn');
+  const btn = e.target.closest('[data-cat]');
   if (!btn) return;
   selectedCat = btn.dataset.cat;
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#moments-categories .chiclet').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 
-  // Pick first event in category
   const firstKey = Object.keys(MOMENTS).find(k => MOMENTS[k].cat === selectedCat);
   renderCategoryEvents(selectedCat);
   selectEvent(firstKey);
@@ -568,7 +513,7 @@ document.getElementById('moments-categories').addEventListener('click', (e) => {
 
 // ─── Event switching ────────────────────────────────────────────────────
 momentsEventsEl.addEventListener('click', (e) => {
-  const btn = e.target.closest('.event-btn');
+  const btn = e.target.closest('.chiclet');
   if (!btn) return;
   selectEvent(btn.dataset.event);
 });
@@ -577,36 +522,31 @@ momentsEventsEl.addEventListener('click', (e) => {
 function switchMode(mode) {
   currentMode = mode;
 
-  // Toggle mode button active states
   document.querySelectorAll('.mode-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.mode === mode);
   });
 
   if (mode === 'platform') {
-    platformModeEl.style.display = '';
-    momentsModeEl.style.display  = 'none';
-    platformSelectorsWrapperEl.style.display = '';
-    momentsSelectorEl.style.display = 'none';
-    lifetimeEntry.style.display = lifetimeValue > 0 ? 'block' : 'none';
-
-    // Show platform about, hide moments about
+    platformModeEl.style.display  = '';
+    momentsModeEl.style.display   = 'none';
+    platformBottomEl.style.display = '';
+    momentsBottomEl.style.display  = 'none';
+    lifetimeEntry.style.display    = lifetimeValue > 0 ? 'block' : 'none';
     document.getElementById('about-platform').style.display = '';
-    document.getElementById('about-moments').style.display = 'none';
+    document.getElementById('about-moments').style.display  = 'none';
   } else {
-    platformModeEl.style.display = 'none';
-    momentsModeEl.style.display  = '';
-    platformSelectorsWrapperEl.style.display = 'none';
-    momentsSelectorEl.style.display = '';
-    lifetimeEntry.style.display = 'none';
-
-    // Show moments about, hide platform about
+    platformModeEl.style.display  = 'none';
+    momentsModeEl.style.display   = '';
+    platformBottomEl.style.display = 'none';
+    momentsBottomEl.style.display  = '';
+    lifetimeEntry.style.display    = 'none';
     document.getElementById('about-platform').style.display = 'none';
-    document.getElementById('about-moments').style.display = '';
+    document.getElementById('about-moments').style.display  = '';
 
-    // Reset moments counter for fresh entry
-    momentsLastTick = performance.now();
-    momentsElapsed  = 0;
-    momentsValue    = 0;
+    // Reset counter
+    momentsLastTick   = performance.now();
+    momentsElapsed    = 0;
+    momentsValue      = 0;
     momentsFlavorShown = false;
     momentsFlavorEl.classList.remove('visible');
 
@@ -621,6 +561,6 @@ modeToggleEl.addEventListener('click', (e) => {
   switchMode(btn.dataset.mode);
 });
 
-// Initialize moments events and set first event data
+// ─── Initialize ─────────────────────────────────────────────────────────
 renderCategoryEvents(selectedCat);
 selectEvent(selectedEventKey);
