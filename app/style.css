@@ -23,11 +23,20 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── About button ────────────────────────────────────────────────────── */
-#about-btn {
+/* ─── Top nav ────────────────────────────────────────────────────────── */
+#top-nav {
   position: fixed;
   top: 1.75rem;
   left: 1.75rem;
+  right: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+}
+
+/* ─── About button ────────────────────────────────────────────────────── */
+#about-btn {
   background: none;
   border: none;
   color: var(--dimmer);
@@ -193,7 +202,7 @@ body {
 /* ─── Platform label ─────────────────────────────────────────────────── */
 #platform-label {
   position: fixed;
-  bottom: 9rem;
+  bottom: 7rem;
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.75rem;
@@ -210,7 +219,7 @@ body {
 /* ─── Lens selector ───────────────────────────────────────────────────── */
 #book-selector {
   position: fixed;
-  bottom: 4.5rem;
+  bottom: 3.75rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -252,17 +261,11 @@ body {
 #book-selector button:hover .lens-desc,
 #book-selector button.active .lens-desc { color: var(--dim); }
 
-/* ─── Mode toggle ────────────────────────────────────────────────────── */
+/* ─── Mode toggle (lives in top-nav) ─────────────────────────────────── */
 #mode-toggle {
-  position: fixed;
-  bottom: 7rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  white-space: nowrap;
-  z-index: 10;
+  gap: 0.4rem;
 }
 .mode-btn {
   background: none;
@@ -270,18 +273,17 @@ body {
   color: var(--dimmer);
   font-family: 'Inter', system-ui, sans-serif;
   font-weight: 300;
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
   cursor: pointer;
-  padding: 0.25rem 0;
+  padding: 0;
   transition: color 0.25s;
-  letter-spacing: 0.04em;
   -webkit-font-smoothing: antialiased;
 }
 .mode-btn:hover { color: var(--dim); }
 .mode-btn.active { color: var(--text); }
 .mode-sep {
   color: var(--dimmer);
-  font-size: 0.5rem;
+  font-size: 0.8125rem;
   opacity: 0.35;
   user-select: none;
 }
@@ -355,7 +357,7 @@ body {
 /* ─── Moments selector ───────────────────────────────────────────────── */
 #moments-selector {
   position: fixed;
-  bottom: 2.5rem;
+  bottom: 3.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -481,8 +483,10 @@ body {
 
 /* ─── Mobile ──────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
-  #about-btn      { top: 1rem; left: 1rem; }
-  #lifetime-entry { top: 1rem; right: 1rem; }
+  #top-nav        { top: 1rem; left: 1rem; right: 1rem; }
+  #lifetime-entry { top: 3rem; right: 1rem; }
   #book-selector  { gap: 0.75rem; }
   #book-selector button { font-size: 0.8125rem; color: var(--dim); }
+  #moments-selector { white-space: normal; }
+  #moments-events { max-width: 340px; }
 }

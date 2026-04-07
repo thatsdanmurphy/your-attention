@@ -20,8 +20,15 @@
 </head>
 <body>
 
-  <!-- About -->
-  <button id="about-btn">What is this?</button>
+  <!-- Top nav: mode toggle + about -->
+  <div id="top-nav">
+    <button id="about-btn">What is this?</button>
+    <div id="mode-toggle">
+      <button class="mode-btn active" data-mode="platform">Platform</button>
+      <span class="mode-sep">/</span>
+      <button class="mode-btn" data-mode="moments">Moments</button>
+    </div>
+  </div>
 
   <div id="about-overlay">
     <div id="about-content">
@@ -95,7 +102,7 @@
   <!-- ═══ MOMENTS MODE ═══ -->
   <div id="moments-mode" style="display:none;">
     <div id="moments-main">
-      <div id="moments-eyebrow">Collective attention, right now</div>
+      <div id="moments-eyebrow">When everyone watches at once</div>
       <div id="moments-value">$0</div>
       <div id="moments-context"></div>
       <div id="moments-notes">
@@ -108,13 +115,6 @@
   <div id="platform-label">platform</div>
 
   <!-- ═══ BOTTOM SELECTORS ═══ -->
-
-  <!-- Mode toggle -->
-  <div id="mode-toggle">
-    <button class="mode-btn active" data-mode="platform">Platform</button>
-    <span class="mode-sep">·</span>
-    <button class="mode-btn" data-mode="moments">Moments</button>
-  </div>
 
   <!-- Platform lens selector (shown in platform mode) -->
   <div id="book-selector">
