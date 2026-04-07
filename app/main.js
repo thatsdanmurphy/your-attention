@@ -102,7 +102,7 @@ function tick(now) {
   // Scale: the "oh shit" confrontation — their number vs yours
   const scaled = sessionValue * lens.dau;
   scaleAmountEl.textContent = fmtScaled(scaled);
-  scaleLabelEl.textContent  = `x ${lens.dauStr} ${lens.name} users right now`;
+  scaleLabelEl.textContent  = `× ${lens.dauStr} daily ${lens.name} users`;
 
   // Microcopy reveals
   NOTES.forEach(({ id, threshold, conditional }) => {
@@ -312,41 +312,45 @@ const MOMENTS = {
     name: 'The Super Bowl',
     cat: 'sports',
     desc: 'broadcast + social + betting',
-    audience: '125 million viewers',
+    audience: '125 million watched',
     rate: 267000,   // ~$8M/30sec ad spots, ~50min of ads over ~4hrs
     flavor: 'The only event where people watch the ads on purpose.',
-    context: '125 million Americans. $8M per 30-second spot. The attention is voluntary.',
+    context: '$8M per 30-second spot. The attention is voluntary.',
     source: 'Super Bowl LX (2026). Nielsen, NBC ad rates.',
+    link: 'https://en.wikipedia.org/wiki/Super_Bowl',
   },
   worldcup: {
     name: 'World Cup Final',
     cat: 'sports',
     desc: 'the whole planet',
-    audience: '1.5 billion viewers',
+    audience: '1.5 billion watched',
     rate: 1500000,  // Estimated from ~$11B tournament rev, final captures disproportionate share
     flavor: 'The single largest simultaneous audience on Earth.',
-    context: '1.5 billion viewers. Every broadcast surface on the planet. Nothing else comes close.',
+    context: 'Every broadcast surface on the planet. Nothing else comes close.',
     source: 'FIFA 2022 final (1.5B viewers). 2026 projections from FIFA/SI.',
+    link: 'https://en.wikipedia.org/wiki/2022_FIFA_World_Cup_final',
   },
   nbafinals: {
     name: 'NBA Finals',
     cat: 'sports',
     desc: 'game 7',
-    audience: '19.6 million viewers',
+    audience: '19.6 million watched',
     rate: 18000,    // $288M series / ~7 games / ~2.5hrs
     flavor: 'The per-second value of Game 7 dwarfs Game 1.',
-    context: '19.6 million viewers at peak. $288M in ad revenue across the series.',
+    context: '$288M in ad revenue across the series. Game 7 dwarfs Game 1.',
     source: '2025 NBA Finals. NBA.com, Sportico.',
+    link: 'https://en.wikipedia.org/wiki/NBA_Finals',
   },
   stanleycup: {
     name: 'Stanley Cup',
     cat: 'sports',
     desc: 'smaller crowd, higher CPM',
-    audience: '4.8 million viewers',
+    audience: '4.8 million watched',
     rate: 8000,     // ~$250M series / ~6 games / ~2.5hrs
     flavor: 'The audience is smaller. The audience is wealthier. The math still works.',
-    context: '4.8 million viewers. The hockey audience skews wealthy — the CPM reflects it.',
+    context: 'The hockey audience skews wealthy — the CPM reflects it.',
     source: '2025 Stanley Cup Finals. Yahoo Sports, Amra & Elma.',
+    link: 'https://en.wikipedia.org/wiki/Stanley_Cup_Finals',
   },
 
   // ── Cultural Ceremonies ──
@@ -354,21 +358,23 @@ const MOMENTS = {
     name: 'The Oscars',
     cat: 'culture',
     desc: 'fashion + discourse + catalog bumps',
-    audience: '17.9 million viewers',
+    audience: '17.9 million watched',
     rate: 66667,    // $2M/30sec
     flavor: 'The ceremony is the seed. The real attention harvest comes after.',
-    context: '17.9 million viewers. $2M per 30-second spot. Nominees see streaming spikes for weeks.',
+    context: '$2M per 30-second spot. Nominees see streaming spikes for weeks.',
     source: '98th Academy Awards (2026). Variety, Deadline.',
+    link: 'https://en.wikipedia.org/wiki/Academy_Awards',
   },
   grammys: {
     name: 'The Grammys',
     cat: 'culture',
     desc: 'performances + streaming spikes',
-    audience: '14.4 million viewers',
+    audience: '14.4 million watched',
     rate: 30000,    // ~$900K-1M/30sec estimated
     flavor: 'A single performance can generate millions of streams overnight.',
-    context: '14.4 million viewers. 74.8 million social interactions. 302.5 million video views.',
+    context: '74.8 million social interactions. 302.5 million video views.',
     source: '68th Grammy Awards (2026). Variety, CBS.',
+    link: 'https://en.wikipedia.org/wiki/Grammy_Awards',
   },
 
   // ── Political Inflection Points ──
@@ -376,21 +382,23 @@ const MOMENTS = {
     name: 'Election Night',
     cat: 'political',
     desc: 'compulsive attention',
-    audience: '42.3 million viewers',
+    audience: '42.3 million tuned in',
     rate: 50000,    // Estimated across 18 networks, 4-8hrs sustained
     flavor: 'Nobody is being entertained. They\'re watching because they have to know.',
-    context: '42.3 million viewers across 18 networks. Hours of near-zero channel switching.',
+    context: '18 networks simultaneously. Hours of near-zero channel switching.',
     source: '2024 Presidential Election. Nielsen.',
+    link: 'https://en.wikipedia.org/wiki/2024_United_States_presidential_election',
   },
   stateofunion: {
     name: 'State of the Union',
     cat: 'political',
     desc: 'appointment TV, cross-demographic',
-    audience: '36.6 million viewers',
+    audience: '36.6 million tuned in',
     rate: 30000,    // Estimated from network ad rates across ~1.5hrs
     flavor: 'One of the only remaining appointment-TV political events.',
-    context: '36.6 million viewers. Peak of 37.9M at 9:45 PM. Every major network, simultaneously.',
+    context: 'Peak at 9:45 PM. Every major network, simultaneously.',
     source: '2025 Joint Address. Nielsen.',
+    link: 'https://en.wikipedia.org/wiki/State_of_the_Union',
   },
 
   // ── Digital-Native Moments ──
@@ -398,61 +406,67 @@ const MOMENTS = {
     name: 'Kai Cenat Subathon',
     cat: 'digital',
     desc: 'one person, one camera',
-    audience: '1 million viewers',
+    audience: '1 million concurrent',
     rate: 7.72,     // ~$20M over 30 days = ~$7.72/sec
     flavor: 'One person generating Super Bowl-adjacent revenue from a living room.',
-    context: '1,005,331 concurrent viewers. 1,031,736 subscribers. ~$20M in 30 days. No broadcast network.',
+    context: '1,031,736 subscribers. ~$20M in 30 days. No broadcast network.',
     source: 'Mafiathon 3 (Sept 2025). Streams Charts, TwitchTracker.',
+    link: 'https://en.wikipedia.org/wiki/Kai_Cenat',
   },
   lolworlds: {
     name: 'LoL Worlds Final',
     cat: 'digital',
     desc: '50M viewers, mostly invisible',
-    audience: '50 million viewers',
+    audience: '50 million watched',
     rate: 14000,    // Estimated from esports sponsorship + broadcast deals over ~5hr broadcast
     flavor: 'Most of this audience is invisible to traditional media measurement.',
-    context: '50 million peak viewers including China. 6.9M excluding China. Primarily under 30.',
+    context: 'Primarily under 30. Most invisible to traditional media measurement.',
     source: 'Worlds 2024 Final. Esports Charts, KitGuru.',
+    link: 'https://en.wikipedia.org/wiki/League_of_Legends_World_Championship',
   },
   mrbeast: {
     name: 'MrBeast Video Drop',
     cat: 'digital',
     desc: '$3,333 per content-second',
-    audience: '33–52 million viewers',
+    audience: '33–52 million views',
     rate: 3333,     // ~$3M ad rev over ~15min of content
     flavor: 'Per-second attention value that rivals network television. One creator.',
-    context: '33-52M views in the first 24 hours. ~$3M in ad revenue per 15-minute video.',
+    context: '~$3M in ad revenue per 15-minute video. One creator.',
     source: 'MrBeast (2025). Social Blade, creator interviews.',
+    link: 'https://en.wikipedia.org/wiki/MrBeast',
   },
   joerogan: {
     name: 'Joe Rogan Episode',
     cat: 'digital',
     desc: 'audio-first, 11M listeners',
-    audience: '11 million listeners',
+    audience: '11 million per episode',
     rate: 11.57,    // ~$100K per episode / ~2.4hrs avg
     flavor: 'No visual real estate to sell. Monetizes at scale anyway.',
-    context: '11 million listeners per episode. #1 on Spotify, Apple, and YouTube. Six years running.',
+    context: '#1 on Spotify, Apple, and YouTube. Six years running.',
     source: 'JRE (2025). Hollywood Reporter, JRE Library.',
+    link: 'https://en.wikipedia.org/wiki/The_Joe_Rogan_Experience',
   },
   squidgame: {
     name: 'Netflix Premiere',
     cat: 'digital',
     desc: 'no ads — attention as retention',
-    audience: '68 million viewers',
+    audience: '68 million households',
     rate: 39,       // 487.6M hours in 4 days, ~$0.10/hr internal value
     flavor: 'The value is invisible. It exists as retention, not revenue.',
-    context: '68M views in 4 days. 487.6M hours watched. #1 in 92 countries. Zero ad dollars.',
+    context: '487.6M hours watched. #1 in 92 countries. Zero ad dollars.',
     source: 'Squid Game S2 (Dec 2024). Variety, Netflix.',
+    link: 'https://en.wikipedia.org/wiki/Squid_Game_(TV_series)',
   },
   primeday: {
     name: 'Amazon Prime Day',
     cat: 'digital',
     desc: 'attention as transaction',
-    audience: '200+ million shoppers',
+    audience: '200+ million shopped',
     rate: 69791,    // $24.1B / 4 days / 86400 sec
     flavor: 'No entertainment. No content. Pure commercial attention converted to purchases.',
     context: '$24.1 billion in 4 days. Equivalent to Black Friday + Cyber Monday combined.',
     source: 'Prime Day 2025. CNBC, Amazon.',
+    link: 'https://en.wikipedia.org/wiki/Amazon_Prime_Day',
   },
 };
 
@@ -468,6 +482,7 @@ let momentsFlavorShown = false;
 const momentsModeEl     = document.getElementById('moments-mode');
 const platformModeEl    = document.getElementById('platform-mode');
 const momentsValueEl    = document.getElementById('moments-value');
+const momentsTimerEl    = document.getElementById('moments-timer');
 const momentsAudienceEl = document.getElementById('moments-audience');
 const momentsContextEl  = document.getElementById('moments-context');
 const momentsEyebrowEl  = document.getElementById('moments-eyebrow');
@@ -478,6 +493,12 @@ const bookSelectorEl    = document.getElementById('book-selector');
 const modeToggleEl      = document.getElementById('mode-toggle');
 
 // ─── Moments formatting ─────────────────────────────────────────────────
+function fmtTimer(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return m + ':' + String(s).padStart(2, '0');
+}
+
 function fmtMoments(n) {
   if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
   if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
@@ -514,10 +535,15 @@ function selectEvent(key) {
   momentsFlavorEl.classList.remove('visible');
 
   const evt = MOMENTS[key];
-  momentsAudienceEl.textContent = evt.audience + ' watching';
-  momentsContextEl.textContent  = evt.context;
+  momentsAudienceEl.textContent = evt.audience;
+  if (evt.link) {
+    momentsContextEl.innerHTML = evt.context + ' <a href="' + evt.link + '" target="_blank" rel="noopener" class="learn-more">What is this?</a>';
+  } else {
+    momentsContextEl.textContent = evt.context;
+  }
   momentsFlavorEl.textContent   = evt.flavor;
   momentsValueEl.textContent    = '$0';
+  momentsTimerEl.textContent    = '0:00';
 
   // Update active states
   document.querySelectorAll('.event-btn').forEach(b => {
@@ -540,6 +566,7 @@ function momentsTick(now) {
   momentsValue   += delta * evt.rate;
 
   momentsValueEl.textContent = fmtMoments(momentsValue);
+  momentsTimerEl.textContent = fmtTimer(momentsElapsed);
 
   // Show flavor note after 5 seconds
   if (momentsElapsed >= 5 && !momentsFlavorShown) {
